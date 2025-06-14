@@ -115,6 +115,7 @@ class DuelBanRayOut extends State<DuelBan> {
           Expanded(
               flex: 3,
               child: ListView.builder(
+                  reverse: true,
                   itemCount: p.lifes.length,
                   itemBuilder: (context, index){
                     return Container(
