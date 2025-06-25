@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class LifeLog{
   int lifechange = 0;
 
@@ -16,6 +18,8 @@ class Player{
   int lifechange =0;
 
   List<LifeLog> lifes = [];
+
+  final ScrollController controller = ScrollController();
 
   Player( String name){
     this.Name = name;

@@ -64,6 +64,11 @@ class DuelBan extends StatefulWidget {
 
 class DuelBanRayOut extends State<DuelBan> {
 
+  @override
+  void initState(){
+  super.initState();
+  }
+
   void Reset(){
     Players.forEach((Player p){
       p.lifenow = 20;
@@ -115,6 +120,7 @@ class DuelBanRayOut extends State<DuelBan> {
           Expanded(
               flex: 3,
               child: ListView.builder(
+                  controller: p.controller,
                   reverse: true,
                   itemCount: p.lifes.length,
                   itemBuilder: (context, index){
@@ -234,6 +240,13 @@ class DuelBanRayOut extends State<DuelBan> {
                               p.lifes.add(LifeLog(p.lifechange, then));
                               p.lifenow = then;
                               p.lifechange = 0;
+                            }
+                          });
+
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            print(p.controller.hasClients);
+                            if (p.controller.hasClients) {
+                              p.controller.jumpTo(p.controller.position.maxScrollExtent);
                             }
                           });
                         },
