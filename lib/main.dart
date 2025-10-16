@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'Classfile.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,6 +10,7 @@ void main() {
     DeviceOrientation.landscapeLeft
   ]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  WakelockPlus.enable();
   runApp(const MyApp());
 }
 
@@ -77,6 +79,11 @@ class DuelBanRayOut extends State<DuelBan> {
 
     setState(() {
     });
+  }
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   Widget PlayerView(Player p, BuildContext context){
