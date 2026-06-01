@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'Classfile.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -64,7 +65,78 @@ class DuelBan extends StatefulWidget {
   State<DuelBan> createState() => DuelBanRayOut();
 }
 
+class customClipper1 extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+
+    path.moveTo(0, 0);
+    path.lineTo(size.width,0);
+    path.lineTo(size.width-30, size.height);
+    path.lineTo(0, size.height);
+
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+class customClipper2 extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+
+    path.moveTo(30, 0);
+    path.lineTo(0, size.height);
+    path.lineTo(size.width -30, size.height);
+    path.lineTo(size.width , 0);
+
+    path.close();
+
+    return path;
+  }
+
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+class customClipper3 extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+
+    path.moveTo(20, 0);
+    path.lineTo(size.width , 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0,size.height);
+
+    path.close();
+
+    return path;
+  }
+
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+
 class DuelBanRayOut extends State<DuelBan> {
+
+
 
   @override
   void initState(){
@@ -83,6 +155,7 @@ class DuelBanRayOut extends State<DuelBan> {
   @override
   void dispose() {
     WakelockPlus.disable();
+
     super.dispose();
   }
 
@@ -109,17 +182,19 @@ class DuelBanRayOut extends State<DuelBan> {
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: Colors.blue,
+                      color: Colors.black,
                       width : 2.0
                   ),
                   borderRadius: BorderRadius.circular(10),
+                  color: Players.indexOf(p) == 0 ? Colors.redAccent[700] : Colors.blueAccent[700]
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   p.lifenow.toString(),
                   style: const TextStyle(
                     fontSize: 70,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white
                   ),
                 ),
               )
@@ -134,11 +209,9 @@ class DuelBanRayOut extends State<DuelBan> {
                     return Container(
                       height: 40,
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
+                        border: Border.all(
                             color: Colors.black,
-                            width: 1,
-                          ),
+                            width : 1.0
                         ),
                       ),
                       child: Row(
@@ -160,7 +233,7 @@ class DuelBanRayOut extends State<DuelBan> {
                           Text(
                             p.lifes[index].lifethen.toString(),
                             style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black
                             ),
@@ -178,99 +251,134 @@ class DuelBanRayOut extends State<DuelBan> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      const SizedBox(width: 10),
-                      Text(
-                        p.lifechange.toString(),
-                        style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
+                  SizedBox(
+                    width: 300,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                            child: ClipPath(
+                              clipper: customClipper1(),
+                              child:ElevatedButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      p.lifechange++;
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                    // 2. ボタンの内側・外側の余白を完全にゼロにする
+                                    padding: EdgeInsets.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor: Colors.green[400],
+                                    minimumSize: const Size(0,0), // クリッパーの範囲に合うサイズを指定
+                                  ),
+                                  child: SizedBox(
+                                    width: 140,
+                                    child: Center(
+                                     child:Text(
+                                       '▲',
+                                       style: TextStyle(
+                                           fontSize: 24,
+                                           fontWeight: FontWeight.bold,
+                                           color: Colors.black
+                                       ),
+                                     ),
+                                    )
+                                  )
+                              ),
+                            ),
+                        ),
+                    // 2. 中央のボタン (▼)
+                    Positioned(
+                      left: 100,
+                      child: ClipPath(
+                        clipper: customClipper2(),
+                        child: ElevatedButton(
+                            onPressed: (){
+                              setState(() {
+                                p.lifechange--;
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                              // 2. ボタンの内側・外側の余白を完全にゼロにする
+                              padding: EdgeInsets.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              backgroundColor: Colors.grey[500],
+                              minimumSize: const Size(0,0),
+                            ),
+                            child: SizedBox(
+                              width: 130,
+                              child: Center(
+                                child: Text(
+                                  '▼',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black
+                                  ),
+                                ),
+                              )
+                            )
                         ),
                       ),
-                    ]
+                    ),
+                        Positioned(
+                          left: 240,
+                            child: Text(
+                              p.lifechange.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                              ),
+                            ),
+                            ),
+                      ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: (){
-                          setState(() {
-                            p.lifechange--;
-                          });
-                        },
-                        child: const Text(
-                          '▼',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)
-                          ),
-                          backgroundColor: Colors.teal[50],
-                          //fixedSize: Size(double.infinity, 10),
-                        ),
+                  ClipPath(
+                    clipper: customClipper3(),
+                    child:ElevatedButton(
+                      onPressed: (){
+                        setState(() {
+                          if(p.lifechange != 0){
+                            int then = p.lifenow + p.lifechange;
+                            p.lifes.add(LifeLog(p.lifechange, then));
+                            p.lifenow = then;
+                            p.lifechange = 0;
+                          }
+                        });
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          print(p.controller.hasClients);
+                          if (p.controller.hasClients) {
+                            p.controller.jumpTo(p.controller.position.maxScrollExtent);
+                          }
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                        // 2. ボタンの内側・外側の余白を完全にゼロにする
+                        padding: EdgeInsets.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        backgroundColor: Colors.deepOrangeAccent[400],
+                        minimumSize: const Size(0,0),
                       ),
-                      const SizedBox(width: 5),
-                      ElevatedButton(
-                        onPressed: (){
-                          setState(() {
-                            p.lifechange++;
-                          });
-                        },
-                        child: const Text(
-                          '▲',
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)
-                          ),
-                          backgroundColor: Colors.teal[50],
-                          //fixedSize: Size(double.infinity, 10),
-                        ),
+                      child:  SizedBox(
+                          width: 80,
+                          child:Center(
+                            child: Text(
+                              '〇',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white
+                              ),
+                            ),
+                          )
                       ),
-                      ElevatedButton(
-                        onPressed: (){
-                          setState(() {
-                            if(p.lifechange != 0){
-                              int then = p.lifenow + p.lifechange;
-                              p.lifes.add(LifeLog(p.lifechange, then));
-                              p.lifenow = then;
-                              p.lifechange = 0;
-                            }
-                          });
-
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            print(p.controller.hasClients);
-                            if (p.controller.hasClients) {
-                              p.controller.jumpTo(p.controller.position.maxScrollExtent);
-                            }
-                          });
-                        },
-                        child: const Text(
-                          '〇',
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          backgroundColor: Colors.deepOrange[100],
-                        ),
-                      )
-                    ],
+                    ),
                   )
                 ],
               ),
