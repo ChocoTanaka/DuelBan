@@ -115,7 +115,7 @@ class customClipper3 extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(20, 0);
+    path.moveTo(30, 0);
     path.lineTo(size.width , 0);
     path.lineTo(size.width, size.height);
     path.lineTo(0,size.height);
@@ -162,8 +162,12 @@ class DuelBanRayOut extends State<DuelBan> {
   Widget PlayerView(Player p, BuildContext context){
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
-          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+              color: Colors.black,
+              width : 3.0
+          ),
+          borderRadius: BorderRadius.circular(0),
+
         ),
       child:Column(
         children: <Widget>[
@@ -192,7 +196,7 @@ class DuelBanRayOut extends State<DuelBan> {
                 child: Text(
                   p.lifenow.toString(),
                   style: const TextStyle(
-                    fontSize: 70,
+                    fontSize: 100,
                     fontWeight: FontWeight.w900,
                     color: Colors.white
                   ),
@@ -366,7 +370,7 @@ class DuelBanRayOut extends State<DuelBan> {
                         minimumSize: const Size(0,0),
                       ),
                       child:  SizedBox(
-                          width: 80,
+                          width: 90,
                           child:Center(
                             child: Text(
                               '〇',
