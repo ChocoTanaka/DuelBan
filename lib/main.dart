@@ -65,7 +65,7 @@ class DuelBan extends StatefulWidget {
   State<DuelBan> createState() => DuelBanRayOut();
 }
 
-class customClipper1 extends CustomClipper<Path> {
+class customClipper1R extends CustomClipper<Path> {
   @override
   getClip(Size size) {
     var path = Path();
@@ -87,7 +87,9 @@ class customClipper1 extends CustomClipper<Path> {
   }
 }
 
-class customClipper2 extends CustomClipper<Path> {
+
+
+class customClipper2R extends CustomClipper<Path> {
   @override
   getClip(Size size) {
     var path = Path();
@@ -110,7 +112,76 @@ class customClipper2 extends CustomClipper<Path> {
   }
 }
 
-class customClipper3 extends CustomClipper<Path> {
+class customClipper1L extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+
+    path.moveTo(30, 0);
+    path.lineTo(size.width,0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+
+
+class customClipper2L extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+
+    path.moveTo(30, 0);
+    path.lineTo(0, size.height);
+    path.lineTo(size.width -30, size.height);
+    path.lineTo(size.width , 0);
+
+    path.close();
+
+    return path;
+  }
+
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+class customClipper3R extends CustomClipper<Path> {
+@override
+getClip(Size size) {
+  var path = Path();
+
+  path.moveTo(0, 0);
+  path.lineTo(size.width - 30, 0);
+  path.lineTo(size.width, size.height);
+  path.lineTo(0, size.height);
+
+  path.close();
+
+  return path;
+}
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+class customClipper3L extends CustomClipper<Path> {
   @override
   getClip(Size size) {
     var path = Path();
@@ -146,9 +217,9 @@ class DuelBanRayOut extends State<DuelBan> {
   void Reset(){
     Players.forEach((Player p){
       p.lifenow = 20;
-      p.lifes.clear();
-    });
 
+    });
+    lifes.clear();
     setState(() {
     });
   }
@@ -159,239 +230,307 @@ class DuelBanRayOut extends State<DuelBan> {
     super.dispose();
   }
 
-  Widget PlayerView(Player p, BuildContext context){
-    return Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-              color: Colors.black,
-              width : 3.0
-          ),
-          borderRadius: BorderRadius.circular(0),
-
-        ),
-      child:Column(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-              child: Text(
-                p.Name,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+  Widget Buttonview1(Player p, double height){
+    return SizedBox(
+      width: 300,
+      height: height,
+      child: Stack(
+        children: [
+          Positioned(
+            right: 0,
+            child: ClipPath(
+              clipper: customClipper1L() ,
+              child:ElevatedButton(
+                  onPressed: (){
+                    setState(() {
+                      p.lifechange++;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    // 2. ボタンの内側・外側の余白を完全にゼロにする
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: Colors.green[400],
+                    minimumSize: const Size(0,0), // クリッパーの範囲に合うサイズを指定
+                  ),
+                  child: SizedBox(
+                      width: 120,
+                      height: height,
+                      child: Center(
+                        child:Text(
+                          '▲',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                          ),
+                        ),
+                      )
+                  )
+              ),
             ),
           ),
-          Expanded(
-              flex: 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Colors.black,
-                      width : 2.0
+          // 2. 中央のボタン (▼)
+          Positioned(
+            right: 80,
+            child: ClipPath(
+              clipper: customClipper2L(),
+              child: ElevatedButton(
+                  onPressed: (){
+                    setState(() {
+                      p.lifechange--;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    // 2. ボタンの内側・外側の余白を完全にゼロにする
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: Colors.grey[500],
+                    minimumSize: const Size(0,0),
                   ),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Players.indexOf(p) == 0 ? Colors.redAccent[700] : Colors.blueAccent[700]
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  p.lifenow.toString(),
-                  style: const TextStyle(
-                    fontSize: 100,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white
-                  ),
-                ),
-              )
-          ),
-          Expanded(
-              flex: 3,
-              child: ListView.builder(
-                  controller: p.controller,
-                  reverse: true,
-                  itemCount: p.lifes.length,
-                  itemBuilder: (context, index){
-                    return Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.black,
-                            width : 1.0
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            children:<Widget>[
-                              const SizedBox(width: 10),
-                              Text(
-                                p.lifes[index].lifechange.toString(),
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black
-                                ),
-                              ),
-                            ]
+                  child: SizedBox(
+                      width: 130,
+                      height: height,
+                      child: Center(
+                        child: Text(
+                          '▼',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
                           ),
-                          Text(
-                            p.lifes[index].lifethen.toString(),
-                            style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-              )
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: Colors.purple[50],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  SizedBox(
-                    width: 300,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                            child: ClipPath(
-                              clipper: customClipper1(),
-                              child:ElevatedButton(
-                                  onPressed: (){
-                                    setState(() {
-                                      p.lifechange++;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                                    // 2. ボタンの内側・外側の余白を完全にゼロにする
-                                    padding: EdgeInsets.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: Colors.green[400],
-                                    minimumSize: const Size(0,0), // クリッパーの範囲に合うサイズを指定
-                                  ),
-                                  child: SizedBox(
-                                    width: 140,
-                                    child: Center(
-                                     child:Text(
-                                       '▲',
-                                       style: TextStyle(
-                                           fontSize: 24,
-                                           fontWeight: FontWeight.bold,
-                                           color: Colors.black
-                                       ),
-                                     ),
-                                    )
-                                  )
-                              ),
-                            ),
                         ),
-                    // 2. 中央のボタン (▼)
-                    Positioned(
-                      left: 100,
-                      child: ClipPath(
-                        clipper: customClipper2(),
-                        child: ElevatedButton(
-                            onPressed: (){
-                              setState(() {
-                                p.lifechange--;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                              // 2. ボタンの内側・外側の余白を完全にゼロにする
-                              padding: EdgeInsets.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              backgroundColor: Colors.grey[500],
-                              minimumSize: const Size(0,0),
-                            ),
-                            child: SizedBox(
-                              width: 130,
-                              child: Center(
-                                child: Text(
-                                  '▼',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black
-                                  ),
-                                ),
-                              )
-                            )
-                        ),
-                      ),
-                    ),
-                        Positioned(
-                          left: 240,
-                            child: Text(
-                              p.lifechange.toString(),
-                              style: const TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black
-                              ),
-                            ),
-                            ),
-                      ],
-                    ),
-                  ),
-                  ClipPath(
-                    clipper: customClipper3(),
-                    child:ElevatedButton(
-                      onPressed: (){
-                        setState(() {
-                          if(p.lifechange != 0){
-                            int then = p.lifenow + p.lifechange;
-                            p.lifes.add(LifeLog(p.lifechange, then));
-                            p.lifenow = then;
-                            p.lifechange = 0;
-                          }
-                        });
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          print(p.controller.hasClients);
-                          if (p.controller.hasClients) {
-                            p.controller.jumpTo(p.controller.position.maxScrollExtent);
-                          }
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                        // 2. ボタンの内側・外側の余白を完全にゼロにする
-                        padding: EdgeInsets.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        backgroundColor: Colors.deepOrangeAccent[400],
-                        minimumSize: const Size(0,0),
-                      ),
-                      child:  SizedBox(
-                          width: 90,
-                          child:Center(
-                            child: Text(
-                              '〇',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white
-                              ),
-                            ),
-                          )
-                      ),
-                    ),
+                      )
                   )
-                ],
               ),
-            )
-          )
+            ),
+          ),
+          Positioned(
+            right: 240,
+            child: Text(
+              p.lifechange.toString(),
+              style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black
+              ),
+              textAlign: TextAlign.start,
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
+
+  Widget Buttonview2(Player p, double height){
+    return SizedBox(
+      width: 300,
+      height: height,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            child: ClipPath(
+              clipper: customClipper1R() ,
+              child:ElevatedButton(
+                  onPressed: (){
+                    setState(() {
+                      p.lifechange++;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    // 2. ボタンの内側・外側の余白を完全にゼロにする
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: Colors.green[400],
+                    minimumSize: const Size(0,0), // クリッパーの範囲に合うサイズを指定
+                  ),
+                  child: SizedBox(
+                      width: 120,
+                      height: height,
+                      child: Center(
+                        child:Text(
+                          '▲',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                          ),
+                        ),
+                      )
+                  )
+              ),
+            ),
+          ),
+          // 2. 中央のボタン (▼)
+          Positioned(
+            left: 80,
+            child: ClipPath(
+              clipper: customClipper2R(),
+              child: ElevatedButton(
+                  onPressed: (){
+                    setState(() {
+                      p.lifechange--;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    // 2. ボタンの内側・外側の余白を完全にゼロにする
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: Colors.grey[500],
+                    minimumSize: const Size(0,0),
+                  ),
+                  child: SizedBox(
+                      width: 130,
+                      height: height,
+                      child: Center(
+                        child: Text(
+                          '▼',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                          ),
+                        ),
+                      )
+                  )
+              ),
+            ),
+          ),
+          Positioned(
+            left: 240,
+            child: Text(
+              p.lifechange.toString(),
+              style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black
+              ),
+              textAlign: TextAlign.start,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget PlayerView2(Player p, BuildContext context){
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final parentHeight = constraints.maxHeight;
+        final parentWidth = constraints.maxWidth;
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+                child: Container(
+                  width: parentWidth,
+                  height : parentHeight,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Colors.black,
+                          width : 2.0
+                      ),
+                      borderRadius: BorderRadius.circular(0),
+                      color: p.isp1() ? Colors.red[100] : Colors.blue[100]
+                  ),
+                  alignment: p.isp1() ? Alignment(0.7, 0) : Alignment(-0.7, 0),
+                  child: Text(
+                    p.lifenow.toString(),
+                    style: TextStyle(
+                        fontSize: 100,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        backgroundColor: p.isp1() ? Colors.redAccent[700] : Colors.blueAccent[700]
+                    ),
+                  ),
+                )
+            ),
+            Align(
+                alignment: p.isp1() ? Alignment.topLeft : Alignment.topRight,
+                child: Container(
+                  width : parentWidth * 1/2,
+                  height: parentHeight * (1 / 6),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Colors.black,
+                          width : 2.0
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white
+                  ),
+                  child: Text(
+                    p.pnum.label,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+            ),
+            Positioned(
+                bottom: 2,
+                right: p.isp1() ? 2 : 0,
+                left: p.isp1() ? 0 : 2,
+              child: p.isp1() ? Buttonview1(p,parentHeight * (1 / 6)) : Buttonview2(p,parentHeight * (1 / 6))
+            ),
+            Align(
+              alignment: p.isp1() ? Alignment.bottomLeft : Alignment.bottomRight,
+              child: ClipPath(
+                clipper: p.isp1() ? customClipper3R() : customClipper3L(),
+                child:ElevatedButton(
+                  onPressed: (){
+                    setState(() {
+                      if(p.lifechange != 0){
+                        int then = p.lifenow + p.lifechange;
+                        lifes.add(LifeLog(p.lifechange, then, p.pnum));
+                        p.lifenow = then;
+                        p.lifechange = 0;
+                      }
+                    });
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      print(controller.hasClients);
+                      if (controller.hasClients) {
+                        controller.jumpTo(controller.position.maxScrollExtent);
+                      }
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    // 2. ボタンの内側・外側の余白を完全にゼロにする
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: Colors.orange[400],
+                    minimumSize: const Size(0,0),
+                  ),
+                  child:  SizedBox(
+                      width: parentWidth * (1/3),
+                      height: parentHeight * (1/3),
+                      child:Center(
+                        child: Text(
+                          '〇',
+                          style: TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white
+                          ),
+                        ),
+                      )
+                  ),
+                ),
+              )
+            )
+          ]
+        ) ;
+      }
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -427,17 +566,57 @@ class DuelBanRayOut extends State<DuelBan> {
             ),
           ),
           Expanded(
-              flex: 18,
+              flex: 12,
               child: Row(
                 children: <Widget>[
                   for(Player p in Players)
                     Expanded(
                         flex: 1,
-                        child: PlayerView(p, context)
+                        child: PlayerView2(p, context)
                     ),
                 ],
               )
-          )
+          ),
+          Expanded(
+              flex: 6,
+              child: ListView.builder(
+                  controller: controller,
+                  itemCount: lifes.length,
+                  itemBuilder: (context, index){
+                    return Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Colors.black,
+                            width : 1.0
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: lifes[index].p == players.Player1 ? MainAxisAlignment.start : MainAxisAlignment.end,
+                          children:<Widget>[
+                            Text(
+                              lifes[index].lifethen.toString(),
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              "(${lifes[index].lifechange.toString()})",
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                              ),
+                            ),
+                          ]
+                      ),
+                    );
+                  }
+              )
+          ),
         ],
       )
     );

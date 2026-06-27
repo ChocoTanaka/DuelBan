@@ -1,29 +1,46 @@
 import 'package:flutter/widgets.dart';
 
+enum players{
+  Player1("Player1"),
+  Player2("Player2");
+
+  final String label;
+
+  const players(this.label);
+}
+
 class LifeLog{
+
+  late players p;
+
   int lifechange = 0;
 
   late int lifethen;
 
-  LifeLog(int change, int then){
+  LifeLog(int change, int then, players _p){
     this.lifechange = change;
     this.lifethen = then;
+    this.p = _p;
   }
 }
 
 class Player{
-  late String Name;
+  late players pnum;
   int lifenow = 20;
 
   int lifechange =0;
 
-  List<LifeLog> lifes = [];
+  Player(players _p){
+    this.pnum = _p;
+  }
 
-  final ScrollController controller = ScrollController();
-
-  Player( String name){
-    this.Name = name;
+  bool isp1(){
+    return this.pnum == players.Player1 ? true : false ;
   }
 }
 
-List<Player> Players = [Player('Player1'), Player('Player2')];
+final ScrollController controller = ScrollController();
+
+List<Player> Players = [Player(players.Player1), Player(players.Player2)];
+
+List<LifeLog> lifes = [];
