@@ -117,7 +117,7 @@ class customClipper1L extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(30, 0);
+    path.moveTo(0, 0);
     path.lineTo(size.width,0);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
@@ -141,10 +141,10 @@ class customClipper2L extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(30, 0);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width -30, size.height);
-    path.lineTo(size.width , 0);
+    path.moveTo(0, 0);
+    path.lineTo(30, size.height);
+    path.lineTo(size.width, size.height);
+    path.lineTo(size.width -30 , 0);
 
     path.close();
 
@@ -165,7 +165,7 @@ getClip(Size size) {
   var path = Path();
 
   path.moveTo(0, 0);
-  path.lineTo(size.width - 30, 0);
+  path.lineTo(size.width - 50, 0);
   path.lineTo(size.width, size.height);
   path.lineTo(0, size.height);
 
@@ -186,7 +186,7 @@ class customClipper3L extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(30, 0);
+    path.moveTo(50, 0);
     path.lineTo(size.width , 0);
     path.lineTo(size.width, size.height);
     path.lineTo(0,size.height);
