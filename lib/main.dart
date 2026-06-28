@@ -72,7 +72,7 @@ class customClipper1R extends CustomClipper<Path> {
 
     path.moveTo(0, 0);
     path.lineTo(size.width,0);
-    path.lineTo(size.width-30, size.height);
+    path.lineTo(size.width-25, size.height);
     path.lineTo(0, size.height);
 
     path.close();
@@ -94,10 +94,10 @@ class customClipper2R extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(30, 0);
+    path.moveTo(25, 0);
     path.lineTo(0, size.height);
-    path.lineTo(size.width -30, size.height);
-    path.lineTo(size.width , 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(size.width-25 , 0);
 
     path.close();
 
@@ -120,7 +120,7 @@ class customClipper1L extends CustomClipper<Path> {
     path.moveTo(0, 0);
     path.lineTo(size.width,0);
     path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
+    path.lineTo(25, size.height);
 
     path.close();
 
@@ -141,10 +141,10 @@ class customClipper2L extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(0, 0);
-    path.lineTo(30, size.height);
+    path.moveTo(25, 0);
+    path.lineTo(0, size.height);
     path.lineTo(size.width, size.height);
-    path.lineTo(size.width -30 , 0);
+    path.lineTo(size.width-25, 0);
 
     path.close();
 
@@ -165,8 +165,9 @@ getClip(Size size) {
   var path = Path();
 
   path.moveTo(0, 0);
-  path.lineTo(size.width - 50, 0);
-  path.lineTo(size.width, size.height);
+  path.lineTo(size.width-25, 0);
+  path.lineTo(size.width, size.height / 2);
+  path.lineTo(size.width-25, size.height);
   path.lineTo(0, size.height);
 
   path.close();
@@ -186,11 +187,34 @@ class customClipper3L extends CustomClipper<Path> {
   getClip(Size size) {
     var path = Path();
 
-    path.moveTo(50, 0);
+    path.moveTo(25, 0);
     path.lineTo(size.width , 0);
     path.lineTo(size.width, size.height);
-    path.lineTo(0,size.height);
+    path.lineTo(25,size.height);
+    path.lineTo(0, size.height / 2);
 
+    path.close();
+
+    return path;
+  }
+
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
+    // clipperが変わらない場合はfalse、変わる場合はtrue
+    return false;
+  }
+}
+
+class customClipper_t extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+
+    path.moveTo(0, 0);
+    path.lineTo(size.width , 0);
+    path.lineTo(size.width * 3 /4, size.height);
+    path.lineTo(size.width * 1 /4, size.height);
     path.close();
 
     return path;
@@ -217,7 +241,7 @@ class DuelBanRayOut extends State<DuelBan> {
   void Reset(){
     Players.forEach((Player p){
       p.lifenow = 20;
-
+      p.lifechange =0;
     });
     lifes.clear();
     setState(() {
@@ -230,9 +254,9 @@ class DuelBanRayOut extends State<DuelBan> {
     super.dispose();
   }
 
-  Widget Buttonview1(Player p, double height){
+  Widget Buttonview1(Player p,double width, double height){
     return SizedBox(
-      width: 300,
+      width: width,
       height: height,
       child: Stack(
         children: [
@@ -255,15 +279,16 @@ class DuelBanRayOut extends State<DuelBan> {
                     minimumSize: const Size(0,0), // クリッパーの範囲に合うサイズを指定
                   ),
                   child: SizedBox(
-                      width: 120,
+                      width: width/2,
                       height: height,
-                      child: Center(
+                      child: Container(
+                        alignment: Alignment(0.5,0),
                         child:Text(
                           '▲',
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: height*0.7,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black
+                              color: Colors.white
                           ),
                         ),
                       )
@@ -273,7 +298,7 @@ class DuelBanRayOut extends State<DuelBan> {
           ),
           // 2. 中央のボタン (▼)
           Positioned(
-            right: 80,
+            right: width/2 -25,
             child: ClipPath(
               clipper: customClipper2L(),
               child: ElevatedButton(
@@ -287,19 +312,19 @@ class DuelBanRayOut extends State<DuelBan> {
                     // 2. ボタンの内側・外側の余白を完全にゼロにする
                     padding: EdgeInsets.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: Colors.grey[500],
+                    backgroundColor: Colors.grey[700],
                     minimumSize: const Size(0,0),
                   ),
                   child: SizedBox(
-                      width: 130,
+                      width: width/2 +25,
                       height: height,
                       child: Center(
                         child: Text(
                           '▼',
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: height*0.7,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black
+                              color: Colors.white
                           ),
                         ),
                       )
@@ -307,26 +332,14 @@ class DuelBanRayOut extends State<DuelBan> {
               ),
             ),
           ),
-          Positioned(
-            right: 240,
-            child: Text(
-              p.lifechange.toString(),
-              style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black
-              ),
-              textAlign: TextAlign.start,
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget Buttonview2(Player p, double height){
+  Widget Buttonview2(Player p,double width, double height){
     return SizedBox(
-      width: 300,
+      width: width,
       height: height,
       child: Stack(
         children: [
@@ -349,15 +362,16 @@ class DuelBanRayOut extends State<DuelBan> {
                     minimumSize: const Size(0,0), // クリッパーの範囲に合うサイズを指定
                   ),
                   child: SizedBox(
-                      width: 120,
+                      width: width/2,
                       height: height,
-                      child: Center(
+                      child: Container(
+                        alignment: Alignment(-0.5,0),
                         child:Text(
                           '▲',
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: height*0.7,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black
+                              color: Colors.white
                           ),
                         ),
                       )
@@ -367,7 +381,7 @@ class DuelBanRayOut extends State<DuelBan> {
           ),
           // 2. 中央のボタン (▼)
           Positioned(
-            left: 80,
+            left: width/2 -25,
             child: ClipPath(
               clipper: customClipper2R(),
               child: ElevatedButton(
@@ -381,19 +395,19 @@ class DuelBanRayOut extends State<DuelBan> {
                     // 2. ボタンの内側・外側の余白を完全にゼロにする
                     padding: EdgeInsets.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: Colors.grey[500],
+                    backgroundColor: Colors.grey[700],
                     minimumSize: const Size(0,0),
                   ),
                   child: SizedBox(
-                      width: 130,
+                      width: width/2 +25,
                       height: height,
                       child: Center(
                         child: Text(
                           '▼',
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: height*0.7,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black
+                              color: Colors.white
                           ),
                         ),
                       )
@@ -401,18 +415,7 @@ class DuelBanRayOut extends State<DuelBan> {
               ),
             ),
           ),
-          Positioned(
-            left: 240,
-            child: Text(
-              p.lifechange.toString(),
-              style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black
-              ),
-              textAlign: TextAlign.start,
-            ),
-          ),
+
         ],
       ),
     );
@@ -425,6 +428,7 @@ class DuelBanRayOut extends State<DuelBan> {
         final parentWidth = constraints.maxWidth;
         return Stack(
           children: [
+            //base
             Align(
               alignment: Alignment.center,
                 child: Container(
@@ -438,23 +442,31 @@ class DuelBanRayOut extends State<DuelBan> {
                       borderRadius: BorderRadius.circular(0),
                       color: p.isp1() ? Colors.red[100] : Colors.blue[100]
                   ),
-                  alignment: p.isp1() ? Alignment(0.7, 0) : Alignment(-0.7, 0),
-                  child: Text(
-                    p.lifenow.toString(),
-                    style: TextStyle(
-                        fontSize: 100,
+                  alignment: p.isp1() ? Alignment(5/6, -3/4) : Alignment(-5/6, -3/4),
+                  //lifenow
+                  child : Container(
+                    width: parentWidth * 3/5,
+                    height: parentHeight * 3/4,
+                    alignment: Alignment.center,
+                    color: p.isp1() ? Colors.redAccent[700] : Colors.blueAccent[700],
+                    child: Text(
+                        (p.lifenow + p.lifechange).toString(),
+                      style: TextStyle(
+                        fontSize: parentHeight * 3/4 * 0.8,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
-                        backgroundColor: p.isp1() ? Colors.redAccent[700] : Colors.blueAccent[700]
+                      ),
                     ),
                   ),
+
                 )
             ),
+            //p_name
             Align(
                 alignment: p.isp1() ? Alignment.topLeft : Alignment.topRight,
                 child: Container(
                   width : parentWidth * 1/2,
-                  height: parentHeight * (1 / 6),
+                  height: parentHeight * (1 / 5),
                   decoration: BoxDecoration(
                       border: Border.all(
                           color: Colors.black,
@@ -463,10 +475,11 @@ class DuelBanRayOut extends State<DuelBan> {
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white
                   ),
+                  alignment: Alignment.center,
                   child: Text(
                     p.pnum.label,
-                    style: const TextStyle(
-                      fontSize: 24,
+                    style: TextStyle(
+                      fontSize: parentHeight * 1/5 *0.6,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
@@ -475,55 +488,77 @@ class DuelBanRayOut extends State<DuelBan> {
             ),
             Positioned(
                 bottom: 2,
-                right: p.isp1() ? 2 : 0,
-                left: p.isp1() ? 0 : 2,
-              child: p.isp1() ? Buttonview1(p,parentHeight * (1 / 6)) : Buttonview2(p,parentHeight * (1 / 6))
+                right: 2,
+                left: 2,
+              child: p.isp1() ? Buttonview1(p,parentWidth *(2/3), parentHeight * (1 / 6)) : Buttonview2(p,parentWidth *(2/3),parentHeight * (1 / 6))
             ),
+            //差分
             Align(
-              alignment: p.isp1() ? Alignment.bottomLeft : Alignment.bottomRight,
-              child: ClipPath(
-                clipper: p.isp1() ? customClipper3R() : customClipper3L(),
-                child:ElevatedButton(
-                  onPressed: (){
-                    setState(() {
-                      if(p.lifechange != 0){
-                        int then = p.lifenow + p.lifechange;
-                        lifes.add(LifeLog(p.lifechange, then, p.pnum));
-                        p.lifenow = then;
-                        p.lifechange = 0;
-                      }
-                    });
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      print(controller.hasClients);
-                      if (controller.hasClients) {
-                        controller.jumpTo(controller.position.maxScrollExtent);
-                      }
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                    // 2. ボタンの内側・外側の余白を完全にゼロにする
-                    padding: EdgeInsets.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: Colors.orange[400],
-                    minimumSize: const Size(0,0),
-                  ),
-                  child:  SizedBox(
-                      width: parentWidth * (1/3),
-                      height: parentHeight * (1/3),
-                      child:Center(
-                        child: Text(
-                          '〇',
-                          style: TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white
-                          ),
-                        ),
-                      )
-                  ),
+                alignment: p.isp1() ? Alignment(-3/4, -1/6) : Alignment(3/4, -1/6),
+              child: Text(
+                p.lifechange.toString(),
+                style: TextStyle(
+                    fontSize: parentHeight * 1/5 *0.8,
+                    fontWeight: FontWeight.w500,
+                    color: p.lifechange <0 ? Colors.grey : Colors.white,
                 ),
-              )
+              ),
+            ),
+            //決定
+            Positioned(
+              bottom: 2,
+                right: 2,
+                left: 2,
+              child: SizedBox(
+                height: parentHeight * (1/3),
+                child: Align(
+                  alignment: p.isp1() ? Alignment.centerLeft : Alignment.centerRight,
+                    child: ClipPath(
+                      clipper: p.isp1() ? customClipper3R() : customClipper3L(),
+                      child:ElevatedButton(
+                        onPressed: (){
+                          setState(() {
+                            if(p.lifechange != 0){
+                              int then = p.lifenow + p.lifechange;
+                              lifes.add(LifeLog(p.lifechange, then, p.pnum));
+                              p.lifenow = then;
+                              p.lifechange = 0;
+                            }
+                          });
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            print(controller.hasClients);
+                            if (controller.hasClients) {
+                              controller.jumpTo(controller.position.maxScrollExtent);
+                            }
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                          // 2. ボタンの内側・外側の余白を完全にゼロにする
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          backgroundColor: Colors.orange[700],
+                          minimumSize: const Size(0,0),
+                        ),
+                        child:  SizedBox(
+                            width: parentWidth * (1/3) +25,
+                            height: parentHeight * (1/3),
+                            child:Container(
+                              alignment: p.isp1() ? Alignment(-0.5,0) : Alignment(0.5 , 0),
+                              child: Text(
+                                '〇',
+                                style: TextStyle(
+                                    fontSize: parentHeight * (1/4) *0.7,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white
+                                ),
+                              ),
+                            )
+                        ),
+                      ),
+                    )
+                ),
+              ),
             )
           ]
         ) ;
@@ -538,51 +573,101 @@ class DuelBanRayOut extends State<DuelBan> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: ElevatedButton(
-              onPressed: (){
-                Reset();
-              },
-              child: const Text(
-                  'New Game',
-                style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)
-                ),
-                backgroundColor: Colors.green[300],
-                side: BorderSide(
-                  color: Colors.black, //枠線!
-                  width: 1, //枠線！
-                ),
-                fixedSize: Size.fromWidth(double.maxFinite),
-              ),
-            ),
-          ),
+          //main画面
           Expanded(
               flex: 12,
-              child: Row(
-                children: <Widget>[
-                  for(Player p in Players)
-                    Expanded(
-                        flex: 1,
-                        child: PlayerView2(p, context)
-                    ),
-                ],
-              )
+              child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final parentHeight = constraints.maxHeight;
+                    final parentWidth = constraints.maxWidth;
+                    return Stack(
+                      children: [
+                        Row(
+                          children: [
+                            for(Player p in Players)
+                              Expanded(
+                                  flex: 1,
+                                  child: PlayerView2(p, context)
+                              ),
+                          ],
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: ClipPath(
+                              clipper: customClipper_t(),
+                              child: ElevatedButton(
+                                onPressed: (){
+                                  Reset();
+                                },
+                                child: Container(
+                                  alignment: Alignment.topCenter,
+                                  width : parentWidth * 1/6,
+                                  height : parentHeight * 1/4,
+                                  child: Text(
+                                    'New\nGame',
+                                    style: TextStyle(
+                                        fontSize: parentHeight * 1/6 * 0.5,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.black
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0)
+                                  ),
+                                  backgroundColor: Colors.lightGreenAccent[100],
+                                ),
+                              ),
+                          ),
+                        )
+                      ],
+                    );
+                  }
+              ),
           ),
+          //棋譜
           Expanded(
-              flex: 6,
+              flex: 8,
               child: ListView.builder(
                   controller: controller,
-                  itemCount: lifes.length,
+                  itemCount: lifes.length + 1,
                   itemBuilder: (context, index){
+                    // 最初の要素（indexが0）の場合
+                    if (index == 0) {
+                      return Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.black,
+                                width : 1.0
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "20",
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                ),
+                              ),
+                              Text(
+                                "20",
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                ),
+                              ),
+                            ],
+                          )
+                      );
+                    }
+
                     return Container(
                       height: 40,
                       decoration: BoxDecoration(
@@ -592,19 +677,12 @@ class DuelBanRayOut extends State<DuelBan> {
                         ),
                       ),
                       child: Row(
-                        mainAxisAlignment: lifes[index].p == players.Player1 ? MainAxisAlignment.start : MainAxisAlignment.end,
+                          mainAxisAlignment: lifes[index-1].p == players.Player1 ? MainAxisAlignment.start : MainAxisAlignment.end,
                           children:<Widget>[
                             Text(
-                              lifes[index].lifethen.toString(),
-                              style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Text(
-                              "(${lifes[index].lifechange.toString()})",
+                              lifes[index-1].p == players.Player1 ?
+                              lifes[index-1].lifethen.toString() + "  (${lifes[index-1].lifechange.toString()})" :
+                              "(${lifes[index-1].lifechange.toString()})  " + lifes[index-1].lifethen.toString(),
                               style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -617,6 +695,8 @@ class DuelBanRayOut extends State<DuelBan> {
                   }
               )
           ),
+
+
         ],
       )
     );
